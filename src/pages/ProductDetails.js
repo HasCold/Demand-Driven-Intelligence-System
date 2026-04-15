@@ -10,6 +10,7 @@ import { mapDbProductToXbeat } from '../utils/mapXBeatProduct';
 import SectionsHead from '../components/common/SectionsHead';
 import RelatedSlider from '../components/sliders/RelatedSlider';
 import ProductSummary from '../components/product/ProductSummary';
+import DemandAnalytics from '../components/product/DemandAnalytics';
 import Services from '../components/common/Services';
 
 
@@ -109,6 +110,7 @@ const ProductDetails = () => {
         availability,
         platform: listingPlatform,
         slug: listingSlug,
+        productId,
     } = product;
 
     const discountedPrice = originalPrice - finalPrice;
@@ -234,6 +236,12 @@ const ProductDetails = () => {
             </section>
 
             <ProductSummary {...product} />
+
+            <DemandAnalytics
+                productId={productId}
+                availability={availability}
+                productSlug={listingSlug}
+            />
 
             <section id="related_products" className="section">
                 <div className="container">

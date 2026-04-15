@@ -86,6 +86,7 @@ export function mapDbProductToXbeat(p) {
 
   return {
     id,
+    productId: p?._id ? String(p._id) : undefined,
     platform,
     slug,
     detailPath,

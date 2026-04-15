@@ -40,3 +40,19 @@ export async function fetchXBeatRelated(platform, slug) {
   if (!json.success) throw new Error(json.message || 'Failed to load related products');
   return json.data;
 }
+
+export async function fetchPricePredictions(productId) {
+  const url = `${API_BASE}/x-beat/predict`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ productId }),
+  });
+  const json = await parseJson(res);
+  if (!Array.isArray(json.predictions)) {
+    throw new Error(json.message || 'Failed to load demand analytics');
+  }
+  return json.predictions;
+}

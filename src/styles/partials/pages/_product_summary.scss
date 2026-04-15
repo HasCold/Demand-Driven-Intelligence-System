@@ -85,3 +85,197 @@
         margin-top: 1rem;
     }
 }
+
+#demand_analytics {
+    padding-top: 0;
+}
+
+.demand_analytics_head {
+    margin-bottom: 1.5rem;
+
+    h3 {
+        font-weight: 600;
+    }
+
+    p {
+        margin-top: 0.45rem;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+}
+
+.demand_grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem;
+
+    @include devices(md) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.demand_card {
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    @include bordered(1px, rgba($color: #ffffff, $alpha: 0.15));
+    border-radius: 10px;
+    padding: 1rem;
+
+    .chip {
+        @include bordered(1px, rgba($color: #ffffff, $alpha: 0.25));
+        border-radius: 999px;
+        font-size: 0.78rem;
+        padding: 0.25rem 0.55rem;
+        color: var(--text-muted);
+    }
+}
+
+.demand_card_top {
+    @include flexbox(space-between, center);
+    gap: 0.8rem;
+
+    h4 {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+}
+
+.demand_price {
+    margin-top: 0.8rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.demand_chart {
+    margin-top: 0.8rem;
+
+    svg {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.demand_chart_line {
+    fill: none;
+    stroke: var(--main-color-2);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.demand_chart_ghost_line {
+    fill: none;
+    stroke: rgba(255, 39, 66, 0.28);
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+}
+
+.demand_chart_area {
+    pointer-events: none;
+}
+
+.demand_chart_smooth_line {
+    fill: none;
+    stroke: #ff2742;
+    stroke-width: 2.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 8px rgba(255, 39, 66, 0.35));
+}
+
+.demand_chart_point {
+    fill: #ff2742;
+    stroke: #fff;
+    stroke-width: 0.8;
+    opacity: 0.75;
+    transition: r 0.2s ease, opacity 0.2s ease;
+
+    &.active {
+        opacity: 1;
+    }
+}
+
+.demand_chart_crosshair {
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+}
+
+.demand_chart_tooltip_bg {
+    fill: rgba(16, 18, 24, 0.95);
+    stroke: rgba(255, 255, 255, 0.12);
+    stroke-width: 1;
+}
+
+.demand_chart_tooltip_label {
+    fill: var(--text-muted);
+    font-size: 10px;
+}
+
+.demand_chart_tooltip_price {
+    fill: #fff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.demand_chart_meta {
+    @include flexbox(space-between, center);
+    margin-top: 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.82rem;
+}
+
+.demand_chart_empty,
+.demand_state_msg {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.demand_insight {
+    margin-top: 0.75rem;
+    color: var(--text-muted);
+    font-size: 0.86rem;
+    line-height: 1.45;
+}
+
+.demand_card.is-loading {
+    overflow: hidden;
+}
+
+.shimmer {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.07);
+}
+
+.shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    animation: demand-shimmer 1.35s infinite;
+}
+
+.shimmer-title {
+    width: 48%;
+    height: 18px;
+}
+
+.shimmer-price {
+    width: 34%;
+    height: 26px;
+    margin-top: 0.8rem;
+}
+
+.shimmer-chart {
+    width: 100%;
+    height: 170px;
+    margin-top: 0.8rem;
+}
+
+@keyframes demand-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
