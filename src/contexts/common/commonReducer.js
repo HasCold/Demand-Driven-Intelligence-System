@@ -7,6 +7,13 @@ const commonReducer = (state, action) => {
                 isFormOpen: action.payload.toggle
             };
 
+        case 'OPEN_ACCOUNT_FORM':
+            return {
+                ...state,
+                isFormOpen: true,
+                accountFormMode: action.payload.mode === 'signup' ? 'signup' : 'login',
+            };
+
 
         case 'SET_FORM_USER_INFO':
             return {

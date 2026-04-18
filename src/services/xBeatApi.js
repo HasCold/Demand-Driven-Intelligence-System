@@ -1,5 +1,8 @@
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/v1';
 
+/** Required so httpOnly auth cookies are sent to the API (cross-origin). */
+const withCreds = { credentials: 'include' };
+
 async function parseJson(res) {
   const json = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -19,7 +22,7 @@ export async function fetchXBeatProducts(query = {}) {
   });
   const qs = params.toString();
   const url = `${API_BASE}/x-beat/products${qs ? `?${qs}` : ''}`;
-  const res = await fetch(url);
+  const res = await fetch(url, withCreds);
   const json = await parseJson(res);
   if (!json.success) throw new Error(json.message || 'Failed to load products');
   return json.data;
@@ -27,7 +30,7 @@ export async function fetchXBeatProducts(query = {}) {
 
 export async function fetchXBeatProduct(platform, slug) {
   const url = `${API_BASE}/x-beat/products/${encodeURIComponent(platform)}/${encodeURIComponent(slug)}`;
-  const res = await fetch(url);
+  const res = await fetch(url, withCreds);
   const json = await parseJson(res);
   if (!json.success) throw new Error(json.message || 'Product not found');
   return json.data;
@@ -35,7 +38,7 @@ export async function fetchXBeatProduct(platform, slug) {
 
 export async function fetchXBeatRelated(platform, slug) {
   const url = `${API_BASE}/x-beat/products/${encodeURIComponent(platform)}/${encodeURIComponent(slug)}/related`;
-  const res = await fetch(url);
+  const res = await fetch(url, withCreds);
   const json = await parseJson(res);
   if (!json.success) throw new Error(json.message || 'Failed to load related products');
   return json.data;
@@ -48,6 +51,7 @@ export async function fetchPricePredictions(productId) {
     headers: {
       'Content-Type': 'application/json',
     },
+    ...withCreds,
     body: JSON.stringify({ productId }),
   });
   const json = await parseJson(res);

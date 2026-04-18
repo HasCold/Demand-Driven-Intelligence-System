@@ -73,6 +73,35 @@
         }
     }
 
+    .input_box--password .input_field {
+        padding-right: 2.85rem;
+    }
+
+    .password_toggle {
+        position: absolute;
+        right: 0.4rem;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.35rem;
+        border: none;
+        background: transparent;
+        color: var(--text-color);
+        font-size: 1.35rem;
+        line-height: 1;
+        cursor: pointer;
+        border-radius: 3px;
+        @include transition(color, 0.2s, ease);
+
+        &:hover,
+        &:focus-visible {
+            color: #fff;
+            outline: none;
+        }
+    }
+
     .login_btn {
         @include margin-y(0.8rem, 0.4rem);
     }

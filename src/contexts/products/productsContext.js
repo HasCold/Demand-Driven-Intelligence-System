@@ -1,6 +1,7 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { fetchXBeatProducts } from '../../services/xBeatApi';
 import { mapDbProductToXbeat } from '../../utils/mapXBeatProduct';
+import commonContext from '../common/commonContext';
 
 const productsContext = createContext({
   products: [],
@@ -9,11 +10,24 @@ const productsContext = createContext({
 });
 
 const ProductsProvider = ({ children }) => {
+  const { authSessionChecked, formUserInfo } = useContext(commonContext);
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!authSessionChecked) {
+      return;
+    }
+
+    if (!formUserInfo) {
+      setLoading(false);
+      setProducts([]);
+      setError(null);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -35,7 +49,7 @@ const ProductsProvider = ({ children }) => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [authSessionChecked, formUserInfo]);
 
   const value = useMemo(() => ({ products, loading, error }), [products, loading, error]);
 

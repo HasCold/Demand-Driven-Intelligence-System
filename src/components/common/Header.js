@@ -10,7 +10,7 @@ import SearchBar from './SearchBar';
 
 const Header = () => {
 
-    const { formUserInfo, toggleForm, toggleSearch } = useContext(commonContext);
+    const { formUserInfo, openAccountForm, toggleSearch, signOutUser } = useContext(commonContext);
     const { cartItems } = useContext(cartContext);
     const [isSticky, setIsSticky] = useState(false);
 
@@ -69,9 +69,19 @@ const Header = () => {
                                         !formUserInfo && (
                                             <button
                                                 type="button"
-                                                onClick={() => toggleForm(true)}
+                                                onClick={() => openAccountForm('login')}
                                             >
                                                 Login / Signup
+                                            </button>
+                                        )
+                                    }
+                                    {
+                                        formUserInfo && (
+                                            <button
+                                                type="button"
+                                                onClick={() => signOutUser()}
+                                            >
+                                                Sign out
                                             </button>
                                         )
                                     }
