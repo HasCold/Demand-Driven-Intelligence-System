@@ -1,19 +1,31 @@
 import React, { useContext } from 'react';
 import { IoMdStar } from 'react-icons/io';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import { displayMoney } from '../../helpers/utils';
 import cartContext from '../../contexts/cart/cartContext';
+import wishlistContext from '../../contexts/wishlist/wishlistContext';
 import useActive from '../../hooks/useActive';
 
 
 const ProductCard = (props) => {
 
-    const { id, images, title, info, finalPrice, originalPrice, rateCount, path, detailPath, availablePlatformLabels, priceRange } = props;
+    const { id, productId, images, title, info, finalPrice, originalPrice, rateCount, path, detailPath, availablePlatformLabels, priceRange } = props;
 
     const productLink = detailPath || `${path || '/product-details/'}${id}`;
 
     const { addItem } = useContext(cartContext);
+    const { isInWishlist, toggleWishlist } = useContext(wishlistContext);
     const { active, handleActive, activeClass } = useActive(false);
+
+    const wishlisted = productId ? isInWishlist(productId) : false;
+
+    const handleWishlistClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!productId) return;
+        toggleWishlist(productId);
+    };
 
 
     // handling Add-to-cart
@@ -36,6 +48,18 @@ const ProductCard = (props) => {
         <>
             <div className="card products_card">
                 <figure className="products_img">
+                    {
+                        productId && (
+                            <button
+                                type="button"
+                                className={`products_wishlist_btn ${wishlisted ? 'products_wishlist_btn--active' : ''}`}
+                                onClick={handleWishlistClick}
+                                aria-label={wishlisted ? 'Remove from wishlist' : 'Add to wishlist'}
+                            >
+                                {wishlisted ? <AiFillHeart /> : <AiOutlineHeart />}
+                            </button>
+                        )
+                    }
                     <Link to={productLink}>
                         <img src={images[0]} alt="product-img" />
                     </Link>

@@ -1,6 +1,7 @@
 import { CommonProvider } from './contexts/common/commonContext';
 import { CartProvider } from './contexts/cart/cartContext';
 import { ProductsProvider } from './contexts/products/productsContext';
+import { WishlistProvider } from './contexts/wishlist/wishlistContext';
 import Header from './components/common/Header';
 import XBeatLoginModal from './components/common/XBeatLoginModal';
 import RouterRoutes from './routes/RouterRoutes';
@@ -13,6 +14,7 @@ const App = () => {
   return (
     <>
       <CommonProvider>
+        <WishlistProvider>
         <ProductsProvider>
           <FiltersProvider>
             <CartProvider>
@@ -24,6 +26,7 @@ const App = () => {
             </CartProvider>
           </FiltersProvider>
         </ProductsProvider>
+        </WishlistProvider>
       </CommonProvider>
     </>
   );

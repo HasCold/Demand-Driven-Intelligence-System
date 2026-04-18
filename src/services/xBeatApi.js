@@ -44,6 +44,27 @@ export async function fetchXBeatRelated(platform, slug) {
   return json.data;
 }
 
+export async function fetchWishlistIds() {
+  const url = `${API_BASE}/x-beat/wishlist`;
+  const res = await fetch(url, withCreds);
+  const json = await parseJson(res);
+  if (!json.success) throw new Error(json.message || 'Failed to load wishlist');
+  return json.data?.productIds || [];
+}
+
+export async function toggleWishlistProduct(productId) {
+  const url = `${API_BASE}/x-beat/wishlist/toggle`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    ...withCreds,
+    body: JSON.stringify({ productId }),
+  });
+  const json = await parseJson(res);
+  if (!json.success) throw new Error(json.message || 'Wishlist update failed');
+  return json.data || { inWishlist: false };
+}
+
 export async function fetchPricePredictions(productId) {
   const url = `${API_BASE}/x-beat/predict`;
   const res = await fetch(url, {

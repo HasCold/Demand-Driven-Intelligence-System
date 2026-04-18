@@ -1,10 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { IoMdStar, IoMdCheckmark } from 'react-icons/io';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { calculateDiscount, displayMoney } from '../helpers/utils';
 import useDocTitle from '../hooks/useDocTitle';
 import useActive from '../hooks/useActive';
 import cartContext from '../contexts/cart/cartContext';
+import wishlistContext from '../contexts/wishlist/wishlistContext';
 import { fetchXBeatProduct } from '../services/xBeatApi';
 import { mapDbProductToXbeat } from '../utils/mapXBeatProduct';
 import SectionsHead from '../components/common/SectionsHead';
@@ -21,6 +23,7 @@ const ProductDetails = () => {
     const { handleActive, activeClass } = useActive(0);
 
     const { addItem } = useContext(cartContext);
+    const { isInWishlist, toggleWishlist } = useContext(wishlistContext);
 
     const { platform, slug } = useParams();
 
@@ -65,6 +68,10 @@ const ProductDetails = () => {
     // handling Add-to-cart
     const handleAddItem = () => {
         if (product) addItem(product);
+    };
+
+    const handleWishlist = () => {
+        if (product?.productId) toggleWishlist(product.productId);
     };
 
 
@@ -220,6 +227,18 @@ const ProductDetails = () => {
                             <div className="separator"></div>
 
                             <div className="prod_details_buy_btn">
+                                {
+                                    productId && (
+                                        <button
+                                            type="button"
+                                            className={`btn prod_details_wishlist_btn ${isInWishlist(productId) ? 'prod_details_wishlist_btn--active' : ''}`}
+                                            onClick={handleWishlist}
+                                            aria-label={isInWishlist(productId) ? 'Remove from wishlist' : 'Add to wishlist'}
+                                        >
+                                            {isInWishlist(productId) ? <AiFillHeart /> : <AiOutlineHeart />}
+                                        </button>
+                                    )
+                                }
                                 <button
                                     type="button"
                                     className="btn"

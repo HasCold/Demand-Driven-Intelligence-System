@@ -35,12 +35,14 @@
 
 .search_action,
 .cart_action,
+.wishlist_action,
 .user_action {
     position: relative;
 }
 
 .search_action,
-.cart_action {
+.cart_action,
+.wishlist_action {
     &:hover .tooltip {
         @include toggleVisibility(visible, 1);
     }
@@ -53,7 +55,8 @@
     }
 }
 
-.cart_action {
+.cart_action,
+.wishlist_action {
 
     .badge {
         @include centered;
@@ -64,6 +67,10 @@
         background-color: var(--main-color-2);
         border-radius: 50%;
     }
+}
+
+.wishlist_action a {
+    color: inherit;
 }
 
 .user_action {

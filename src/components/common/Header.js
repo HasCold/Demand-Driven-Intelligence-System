@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AiOutlineSearch, AiOutlineShoppingCart, AiOutlineUser } from 'react-icons/ai';
+import { AiOutlineSearch, AiOutlineShoppingCart, AiOutlineUser, AiOutlineHeart } from 'react-icons/ai';
 import { dropdownMenu } from '../../data/headerData';
 import commonContext from '../../contexts/common/commonContext';
 import cartContext from '../../contexts/cart/cartContext';
+import wishlistContext from '../../contexts/wishlist/wishlistContext';
 import AccountForm from '../form/AccountForm';
 import SearchBar from './SearchBar';
 
@@ -12,6 +13,7 @@ const Header = () => {
 
     const { formUserInfo, openAccountForm, toggleSearch, signOutUser } = useContext(commonContext);
     const { cartItems } = useContext(cartContext);
+    const { wishlistIds } = useContext(wishlistContext);
     const [isSticky, setIsSticky] = useState(false);
 
 
@@ -28,6 +30,7 @@ const Header = () => {
 
 
     const cartQuantity = cartItems.length;
+    const wishlistQuantity = wishlistIds.length;
 
 
     return (
@@ -44,6 +47,18 @@ const Header = () => {
                                     <AiOutlineSearch />
                                 </span>
                                 <div className="tooltip">Search</div>
+                            </div>
+
+                            <div className="wishlist_action">
+                                <Link to="/wishlist">
+                                    <AiOutlineHeart />
+                                    {
+                                        wishlistQuantity > 0 && (
+                                            <span className="badge">{wishlistQuantity}</span>
+                                        )
+                                    }
+                                </Link>
+                                <div className="tooltip">Wishlist</div>
                             </div>
 
                             <div className="cart_action">
