@@ -1,0 +1,32 @@
+{
+  "name": "bachat-bazaar-backend",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "description": "Bachat Bazaar E-Commerce Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "crawler": "node crawler.js",
+    "crawler:dev": "nodemon crawler.js",
+    "seed": "node seed/seed.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "axios": "^1.7.9",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-rate-limit": "^8.3.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.3.4",
+    "puppeteer": "^24.10.2",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "nodemon": "^3.1.0"
+  }
+}

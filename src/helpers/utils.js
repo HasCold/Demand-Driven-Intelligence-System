@@ -1,9 +1,9 @@
 
-// Display Money in Indian Format
+// Display money in PKR (Pakistani Rupee)
 export const displayMoney = (n) => {
-    const numFormat = new Intl.NumberFormat('en-IN', {
+    const numFormat = new Intl.NumberFormat('en-PK', {
         style: 'currency',
-        currency: 'INR',
+        currency: 'PKR',
     });
 
     return numFormat.format(n).split('.', 1);
