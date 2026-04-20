@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const { V1_PATH } = require('./shared/constants');
 const mainRoutes = require("./routes/index");
-const { logger } = require("./src/utils/logger");
+const { logger } = require("./x-beat-conductor/utils/logger");
 
 const app = express();
 

@@ -10,6 +10,7 @@ const reviewSchema = new mongoose.Schema({
 
 const priceHistorySchema = new mongoose.Schema({
   month: { type: String, required: true }, // e.g. "Jan 2024"
+  date: { type: Date },
   price: { type: Number, required: true }
 });
 

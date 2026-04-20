@@ -13,8 +13,26 @@ function loadTf() {
   }
 }
 
+function toHistoryTime(value) {
+  if (!value) return null;
+  const asDate = new Date(value);
+  const asDateTime = asDate.getTime();
+  if (Number.isFinite(asDateTime)) return asDateTime;
+
+  const monthParsed = new Date(`${String(value)} 01`);
+  const monthTime = monthParsed.getTime();
+  return Number.isFinite(monthTime) ? monthTime : null;
+}
+
 function sortHistoryAsc(history) {
-  return [...history].sort((a, b) => String(a.date || "").localeCompare(String(b.date || "")));
+  return [...history].sort((a, b) => {
+    const ta = toHistoryTime(a.date);
+    const tb = toHistoryTime(b.date);
+    if (ta == null && tb == null) return String(a.date || "").localeCompare(String(b.date || ""));
+    if (ta == null) return -1;
+    if (tb == null) return 1;
+    return ta - tb;
+  });
 }
 
 function toPriceArray(sortedHistory) {

@@ -1,13 +1,13 @@
 const Prediction = require("../../models/Prediction");
 const Product = require("../../models/Product");
-const { config } = require("../../src/config");
-const { logger } = require("../../src/utils/logger");
+const { config } = require("../../x-beat-conductor/config");
+const { logger } = require("../../x-beat-conductor/utils/logger");
 const {
   trainAndPredict,
   sortHistoryAsc,
   toPriceArray,
   movingAverageForecast,
-} = require("../../src/services/pricePrediction");
+} = require("../../x-beat-conductor/services/pricePrediction");
 
 function nowMinusSeconds(seconds) {
   return new Date(Date.now() - seconds * 1000);
@@ -24,7 +24,10 @@ function normalizeHistory(history) {
 
 function normalizePriceHistory(history) {
   return normalizeHistory(history).map((item) => ({
-    month: String(item.date),
+    month: item.date instanceof Date
+      ? item.date.toLocaleString("en-US", { month: "short", year: "numeric" }).replace(",", "")
+      : String(item.date),
+    date: item.date instanceof Date ? item.date.toISOString() : null,
     price: Math.round(Number(item.price) * 100) / 100,
   }));
 }

@@ -46,8 +46,9 @@ async function updateEmbeddedMonthlyHistory({ productDoc, price, scrapedAt }) {
   const idx = history.findIndex((h) => h && h.month === month);
   if (idx >= 0) {
     history[idx].price = price;
+    history[idx].date = scrapedAt;
   } else {
-    history.push({ month, price });
+    history.push({ month, date: scrapedAt, price });
   }
 
   productDoc.priceHistory = history;
@@ -65,13 +66,24 @@ function monthKeyToTime(monthKey) {
   return Number.isFinite(t) ? t : null;
 }
 
+function dateToTime(dateValue) {
+  if (!dateValue) return null;
+  const d = dateValue instanceof Date ? dateValue : new Date(dateValue);
+  const t = d.getTime();
+  return Number.isFinite(t) ? t : null;
+}
+
 async function appendEmbeddedHistory({ productDoc, priceHistory, price, scrapedAt }) {
   if (!productDoc) return;
   if (!Array.isArray(priceHistory) || !priceHistory.length) return;
 
   // Normalize incoming items.
   const incoming = priceHistory
-    .map((h) => ({ month: String(h?.month || "").trim(), price: Math.round(Number(h?.price)) }))
+    .map((h) => ({
+      month: String(h?.month || "").trim(),
+      date: h?.date ? new Date(h.date) : null,
+      price: Math.round(Number(h?.price)),
+    }))
     .filter((h) => h.month && Number.isFinite(h.price) && h.price > 0)
     .slice(-12); // don't process unbounded history payloads
 
@@ -83,20 +95,21 @@ async function appendEmbeddedHistory({ productDoc, priceHistory, price, scrapedA
   // Seed from existing.
   for (const h of existing) {
     const month = String(h?.month || "").trim();
+    const date = h?.date ? new Date(h.date) : null;
     const p = Math.round(Number(h?.price));
     if (!month || !Number.isFinite(p) || p <= 0) continue;
-    byMonth.set(month, { month, price: p });
+    byMonth.set(month, { month, date, price: p });
   }
 
   // Merge incoming (overwrite same month, append new month).
   for (const h of incoming) {
-    byMonth.set(h.month, { month: h.month, price: h.price });
+    byMonth.set(h.month, { month: h.month, date: h.date, price: h.price });
   }
 
   // Sort chronologically when possible; otherwise stable by insertion.
   const merged = Array.from(byMonth.values()).sort((a, b) => {
-    const ta = monthKeyToTime(a.month);
-    const tb = monthKeyToTime(b.month);
+    const ta = dateToTime(a.date) ?? monthKeyToTime(a.month);
+    const tb = dateToTime(b.date) ?? monthKeyToTime(b.month);
     if (ta == null && tb == null) return 0;
     if (ta == null) return -1;
     if (tb == null) return 1;

@@ -32,6 +32,16 @@ function buildSmoothPath(coords) {
   return path.join(' ');
 }
 
+function formatHistoryLabel(row) {
+  if (row?.date) {
+    const d = new Date(row.date);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+  }
+  return String(row?.month || '');
+}
+
 function formatPlatformName(platform) {
   const normalized = String(platform || '').toLowerCase();
   if (normalized === 'bachat-bazar') return 'Bachat Bazaar';
@@ -59,7 +69,7 @@ function DemandChart({ history, predictedPrice }) {
   const points = useMemo(() => {
     const base = (Array.isArray(history) ? history : [])
       .filter((row) => Number.isFinite(Number(row?.price)))
-      .map((row) => ({ label: String(row.month || ''), price: Number(row.price) }));
+      .map((row) => ({ label: formatHistoryLabel(row), price: Number(row.price) }));
 
     if (Number.isFinite(Number(predictedPrice?.price))) {
       base.push({ label: 'Next', price: Number(predictedPrice.price) });

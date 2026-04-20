@@ -9,6 +9,8 @@
     "dev": "nodemon server.js",
     "crawler": "node crawler.js",
     "crawler:dev": "nodemon crawler.js",
+    "price-settler": "node price-settler.js",
+    "price-settler:dev": "nodemon price-settler.js",
     "seed": "node seed/seed.js"
   },
   "dependencies": {
