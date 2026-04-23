@@ -1,3 +1,4 @@
+const axios = require("axios");
 const { scoreTitleMatch, normalizeText } = require("../utils/stringMatch");
 const { parsePriceToNumber } = require("../utils/price");
 const { delay } = require("../utils/delay");
@@ -345,6 +346,47 @@ async function scrapeProductDirect({ page, source, product, minMatchScore }) {
   }
 }
 
+async function scrapeProductViaApi({ source, product, minMatchScore }) {
+  const apiBase = String(source?.apiBaseUrl || "").replace(/\/+$/g, "");
+  const slug = String(product?.slug || "").trim();
+  if (!apiBase || !slug) return null;
+
+  try {
+    const resp = await axios.get(`${apiBase}/products/${encodeURIComponent(slug)}`, {
+      timeout: 10_000,
+      validateStatus: () => true,
+    });
+    if (resp.status < 200 || resp.status >= 300) return null;
+
+    const payload = resp?.data?.data || resp?.data;
+    if (!payload || typeof payload !== "object") return null;
+
+    const candidateTitle = String(payload?.name || payload?.title || "").trim();
+    const score = scoreTitleMatch({
+      candidateTitle,
+      productName: product.name,
+      keywords: product.keywords || [],
+    });
+
+    if (!Number.isFinite(score) || score < minMatchScore) return null;
+
+    const price = normalizeScrapedPrice(Number(payload?.price));
+    if (!price) return { status: "no_price" };
+
+    return {
+      status: "ok",
+      price,
+      title: candidateTitle || product.name,
+      href: `${apiBase}/products/${encodeURIComponent(slug)}`,
+      matchScore: score,
+      priceHistory: sanitizePriceHistory(payload?.priceHistory) || undefined,
+      _capturedFromApi: true,
+    };
+  } catch {
+    return null;
+  }
+}
+
 async function scrapeProduct({ page, source, product, minMatchScore }) {
   // Prefer canonical product pages when the app uses stable slugs like:
   //   http://localhost:5173/product/sony-wh-xb910n
@@ -353,6 +395,11 @@ async function scrapeProduct({ page, source, product, minMatchScore }) {
   // Only short-circuit on success. If direct fails (no_price/no_match),
   // fall back to search-based discovery.
   if (direct?.status === "ok") return direct;
+
+  // Container fallback: when frontend rendering/API wiring differs in Docker,
+  // pull product details from source API endpoint directly.
+  const apiFallback = await scrapeProductViaApi({ source, product, minMatchScore });
+  if (apiFallback?.status === "ok") return apiFallback;
 
   const best = await scrapeProductFromSearch({ page, source, product });
   if (!best) return { status: "no_match" };
